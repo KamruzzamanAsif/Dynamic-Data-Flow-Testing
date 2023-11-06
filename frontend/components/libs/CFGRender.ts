@@ -1,5 +1,5 @@
-import Node from "./Node"
 import makeGraph from "./Graph"
+import Node from "./Node"
 
 export const complexity = {
   regions: 0,
@@ -35,8 +35,7 @@ function DFS(node: Node) {
     // append string
     const sourceID = getNodeID(node.label)
     const destinationID = getNodeID(neighbor.label)
-    const appendString = `${sourceID}(${node.label})-->${destinationID}(${neighbor.label})
-    `
+    const appendString = `;${sourceID}(${node.label})-->${destinationID}(${neighbor.label})`
     if (!renderString.includes(appendString) && sourceID !== destinationID) {
       renderString += appendString
     }

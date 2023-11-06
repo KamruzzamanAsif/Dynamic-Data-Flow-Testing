@@ -1,0 +1,11 @@
+#include <stdio.h>
+int main(void) {
+  int i = 0;
+  if (i > 5) {
+    printf("Greater than 5");
+  } 
+  else {
+    printf("Less than 5)
+  }
+  return 0;
+}`;
