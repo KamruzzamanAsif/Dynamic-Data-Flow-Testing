@@ -29,17 +29,17 @@ const CFG = () => {
   console.log("AST", ast);
 
   // Generate a control flow graph (CFG)
-  // const cfg = esgraph(ast);
+  const cfg = esgraph(ast);
 
-  // console.log("CFG:", cfg);
+  console.log("CFG:", cfg);
 
   // // Convert the CFG to a DOT format (or JSON) for visualization
-  // const dot = esgraph.dot(cfg, { counter: 0, source: sourceCode });
+  const dot = esgraph.dot(cfg, { counter: 0, source: sourceCode });
 
-  // console.log(dot);
+  console.log(dot);
 
-  let a = makeGraph(sourceCode);
-  console.log(a);
+   let a = getCFGRender(sourceCode);
+   console.log(a);
 
   return(
       <div className="max-w-lg mx-auto bg-white rounded-lg shadow p-4 mb-4">
