@@ -46,9 +46,6 @@ export default function getCFGRender(code: string): string {
   const variables: string[] = getDistinctVariables(code);
   console.log("Distinct variables:", variables);
 
-  for (const line of code.split("\n")) {
-    lines.push(line)
-  }
 
   makeGraph(1, lines.length, startNode, endNode)
   renderString = `flowchart TD

@@ -9,34 +9,39 @@ const estraverse = require('estraverse');
 
 // Your input source code
 const sourceCode = `
-  let a = 1;
-  let x = a + 2;
-  if (a == 1 ){
-    x += 2;
-  } 
-  else a += 3;
+int main()
+{
+    int a;
+    printf("Enter a: ");
+    scanf("%d", &a);
 
-  for(let i = 0; i <5; i++){
-    x += 2;
-  }
+    //logic
+    if (a % 2 == 0) {
+        printf("The given number is EVEN");
+    }
+    else {
+        printf("The given number is ODD");
+    }
+    return 0;
+}
 `;
 
 
 const CFG = () => {
   // Parse the code
   // const ast = esprima.parse(sourceCode);
-  const ast = esprima.parse(sourceCode, { loc: true });
-  console.log("AST", ast);
+  // const ast = esprima.parse(sourceCode, { loc: true });
+  // console.log("AST", ast);
 
-  // Generate a control flow graph (CFG)
-  const cfg = esgraph(ast);
+  // // Generate a control flow graph (CFG)
+  // const cfg = esgraph(ast);
 
-  console.log("CFG:", cfg);
+  // console.log("CFG:", cfg);
 
-  // // Convert the CFG to a DOT format (or JSON) for visualization
-  const dot = esgraph.dot(cfg, { counter: 0, source: sourceCode });
+  // // // Convert the CFG to a DOT format (or JSON) for visualization
+  // const dot = esgraph.dot(cfg, { counter: 0, source: sourceCode });
 
-  console.log(dot);
+  // console.log(dot);
 
    let a = getCFGRender(sourceCode);
    console.log(a);
