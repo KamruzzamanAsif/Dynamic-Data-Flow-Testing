@@ -19,25 +19,30 @@ const cKeywords: string[] = [
 export function getDistinctVariables(code: string): string[] {
   const variableSet = new Set<string>();
 
-  // Regular expression to match variable declarations
-  const variableDeclarationRegex = /\b(\w+)\s+(\w+)(\s*=\s*[^;]+)?\s*;/g;
+  // Regular expression to match variable declarations with constraints
+  const variableDeclarationRegex = /\b([A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*)\s*;\s*/g;
 
   let match;
   while ((match = variableDeclarationRegex.exec(code)) !== null) {
-    const variableName = match[2];
-    if (!cKeywords.includes(variableName)) {
-      variableSet.add(variableName);
+    const variablesDeclaration = match[1].split(",").map(variable => variable.trim());
+    for (const variable of variablesDeclaration) {
+      if (!cKeywords.includes(variable) && !/^\d+$/.test(variable)) {
+        variableSet.add(variable);
+      }
     }
   }
 
   return Array.from(variableSet);
 }
 
+
+
+
 export default function getCFGRender(code: string): string {
   complexity.regions = 0
   lines = [""]
-  const startNode = new Node("Start")
-  const endNode = new Node("End")
+  // const startNode = new Node("Start")
+  // const endNode = new Node("End")
 
   for (const line of code.split("\n")) {
     lines.push(line)
@@ -46,13 +51,22 @@ export default function getCFGRender(code: string): string {
   const variables: string[] = getDistinctVariables(code);
   console.log("Distinct variables:", variables);
 
+  for (const variable of variables) {
+    const startNode = new Node("Start")
+    const endNode = new Node("End")
+    makeGraph(1, lines.length, startNode, endNode, variable)
+    renderString = `flowchart TD`
+    DFS(startNode)
+    console.log(renderString)
+  }
 
-  makeGraph(1, lines.length, startNode, endNode)
-  renderString = `flowchart TD
-     `
-  DFS(startNode)
 
-  console.log(renderString)
+  // makeGraph(1, lines.length, startNode, endNode)
+  // renderString = `flowchart TD
+  //    `
+  // DFS(startNode)
+
+  // console.log(renderString)
 
   return renderString
 }

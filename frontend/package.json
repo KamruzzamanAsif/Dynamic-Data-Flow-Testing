@@ -11,6 +11,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "@types/dagre": "^0.7.51",
+    "acorn": "^8.11.2",
     "d3": "^7.8.5",
     "dagre": "^0.8.5",
     "elkjs": "^0.8.2",
