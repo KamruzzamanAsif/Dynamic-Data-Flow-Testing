@@ -1,39 +1,33 @@
-import Editor from "@monaco-editor/react";
-import { useRef } from "react";
+import { Editor, OnMount } from "@monaco-editor/react";
+import { forwardRef, useCallback } from "react";
 
-export default function CodeEditor(props: any) {
-  const editorRef: any = useRef(null);
+export const defaultCode = `#include <stdio.h>
+void main()
+{
+    int num1, rem1;
+ 
+    printf("Input an integer : ");
+    scanf("%d", &num1);
+    rem1 = num1 % 2;
+    if (rem1 == 0)
+        printf("%d is an even integer", num1);
+    else
+        printf("%d is an odd integer", num1);
+}`;
 
-  function handleEditorDidMount(editor: any) {
-    editorRef.current = editor;
-  }
-
-  function showValue() {
-    props.setCodeSnippet(editorRef.current.getValue());
-  }
+const CodeEditor = forwardRef((props, ref: any | null) => {
+  const editorDidMount: OnMount = useCallback((editor) => {
+    ref.current = editor;
+  }, []);
 
   return (
-    <div className="flex flex-col h-screen justify-between">
-      <div className="flex flex-col justify-center items-center">
-        {/* Add your headline */}
-        <h1 className="text-3xl mb-4">C Code Viewer 🚀</h1>{" "}
-        <Editor
-          height="85vh"
-          width="50vw"
-          defaultLanguage="c"
-          defaultValue="printf('hello world')"
-          onMount={handleEditorDidMount}
-          theme="vs-dark"
-        />
-      </div>
-      <div className="flex justify-center mb-2">
-        <button
-          className="border-2 bg-yellow-100 rounded-lg p-4 hover:bg-yellow-200"
-          onClick={showValue}
-        >
-          Show value
-        </button>
-      </div>
-    </div>
+    <Editor
+      height="100%"
+      language="c"
+      onMount={editorDidMount}
+      defaultValue={defaultCode}
+    />
   );
-}
+});
+
+export default CodeEditor;

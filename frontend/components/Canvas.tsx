@@ -1,32 +1,19 @@
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import CodeEditor from "./CodeEditor";
-import Graph from "./Graph";
-import GetGraphItems from "./libs/GetGraphItems";
+import Flowchart from "./Diagram/Diagram";
 
 const Canvas = () => {
-  const [nodes, setNodes] = useState<any[]>([]);
-  const [edges, setEdges] = useState<any[]>([]);
-  const [trigger, setTrigger] = useState(false);
-  const [codeSnippet, setCodeSnippet] = useState("");
-
-  // Function to update the graph based on the code snippet
-  const updateGraph = (newCodeSnippet: any) => {
-    const [newNodes, newEdges] = GetGraphItems(newCodeSnippet);
-    setCodeSnippet(newCodeSnippet);
-    setNodes(newNodes);
-    setEdges(newEdges);
-    setTrigger(false);
-  };
-
-  useEffect(() => {
-    setTrigger(true);
-  }, [codeSnippet]);
+  const editorRef = useRef(null);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      {trigger == true ? <Graph nodes={nodes} edges={edges} /> : ""}
-      <div className="h-screen w-full border-2 border-blue-500 bg-slate-400">
-        <CodeEditor setCodeSnippet={updateGraph} />
+      <div className="h-screen w-3/6 overflow-auto">
+        {/* Flowchart takes the remaining height and is scrollable */}
+        <Flowchart editorRef={editorRef} />
+      </div>
+      <div className="h-screen w-3/6 border-2 border-blue-500 bg-slate-400">
+        {/* CodeEditor has a fixed height */}
+        <CodeEditor ref={editorRef} />
       </div>
     </div>
   );
