@@ -1,5 +1,13 @@
+import { complexity, lines } from './CFGRender';
 import Node from "./Node";
-import { lines, complexity } from './CFGRender';
+
+//! Issues:
+// TODO
+/**
+ * 1. Sometimes c-use can't be defined
+ * 2. Sometimes graph generation fails as we have the node name like '8 var: p-use' which should be only '8'
+ * 3. Also the the node which is marked as 'define/p-use/c-use' shouldn't be repeated
+ */
 
 export default function makeGraph(
   firstLine: number,
@@ -8,55 +16,65 @@ export default function makeGraph(
   exitNode: Node,
   variable: string,
 ) {
+
   complexity.regions++
 
   let currentNode = new Node("")
   entryNode.addChild(currentNode)
-  console.log(variable)
   let isVariableDefined = false;
-  let isCUse = false;
 
-  
-  
   for (let i = firstLine; i < lastLine; i++) {
+
+    if (lines[i].includes("//")) {
+      console.log("It's a comment")
+      continue;
+    }
+
+    // Variable assignment or input statement
     if ((lines[i].includes(`${variable} = `) || (lines[i].includes("scanf")) && lines[i].includes(`&${variable}`))) {
-      // Variable assignment or input statement
+      console.log('INSIDE DEFINE-SCANF', variable)
       currentNode.label += i.toString() + ` ${variable} : Define, `;
       isVariableDefined = true;
+      continue;
     }
-    
+
     if (
-      (lines[i].includes(`= ${variable}`) || (lines[i].includes("printf")) && lines[i].includes(`${variable}`)) &&
-      isVariableDefined
+      (lines[i].includes(`= ${variable}`) || ((lines[i].includes("printf")) && lines[i].includes(`${variable}`))) && isVariableDefined
     ) {
       // Variable is on the right side of an assignment after it has been defined
       currentNode.label += i.toString() + ` ${variable} : c-use, `;
-      
+      continue;
     }
-      // Check for expressions involving the variable
-    else if (isVariableDefined) {
-        if (lines[i].includes(`+ ${variable}`) || lines[i].includes(`- ${variable}`) ||
-            lines[i].includes(`* ${variable}`) || lines[i].includes(`/ ${variable}`) ||
-            lines[i].includes(`% ${variable}`)) {
-          // Variable is involved in a computation
-          currentNode.label += i.toString() + ` ${variable} : c-use, `;
-        }
+
+    // Check for expressions involving the variable
+    if (isVariableDefined) {
+      console.log('Defined inside C-USE', variable)
+      if (lines[i].includes(`+ ${variable}`) || lines[i].includes(`- ${variable}`) ||
+        lines[i].includes(`* ${variable}`) || lines[i].includes(`/ ${variable}`) ||
+        lines[i].includes(`% ${variable}`) || (lines[i].includes("printf"))) {
+        // Variable is involved in a computation
+        currentNode.label += i.toString() + ` ${variable} : c-use, `;
+        continue;
+
       }
+    }
+
     // Check for p-use
-    if (lines[i].includes(`if`) || lines[i].includes(`while`) || lines[i].includes(`for`) || lines[i].includes(`do`)) {
-      if (lines[i].includes(variable)) {
-        // if (currentNode.label === "") 
-        currentNode.label += i.toString() + ` ${variable} : p-use, `;
-        // else
-        //     currentNode.label += `p-use, `;
-      }
+    if (lines[i].includes('if') || lines[i].includes('while') || lines[i].includes('for') || lines[i].includes('do')) {
+
+      // console.log('INSIDE CHECKING p-use');
+      console.log('INSIDE P-USE: ', variable)
+      currentNode.label += i.toString() + ` ${variable} : p-use, `;
+      // continue;
+      // }
     }
+
     if (
       lines[i].includes("if") ||
       lines[i].includes("while") ||
-      lines[i].includes("for") ||
-      lines[i].includes("do")
+      lines[i].includes("for") || lines[i].includes("do")
     ) {
+
       if (currentNode.label === "") {
         currentNode.label = i.toString() + ", "
       }
@@ -71,6 +89,8 @@ export default function makeGraph(
       currentNode.addChild(startNode)
       let endLine = findClosingBrace(i) // where the conditional block ends
       const endNode = new Node(endLine.toString() + ", ")
+
+      console.log('Start: ', i, 'End: ', endLine)
       makeGraph(i + 1, endLine, startNode, endNode, variable)
 
       currentNode = endNode
@@ -96,6 +116,7 @@ export default function makeGraph(
     } else {
       currentNode.label += i.toString() + ", "
     }
+
   }
 
   currentNode.addChild(exitNode)
@@ -103,6 +124,7 @@ export default function makeGraph(
 
 // TODO: Make a better parser not dependent on Braces
 function findClosingBrace(firstLine: number): number {
+
   try {
     if (!lines[firstLine].includes("{")) {
       throw "Line does not have an opening brace"
