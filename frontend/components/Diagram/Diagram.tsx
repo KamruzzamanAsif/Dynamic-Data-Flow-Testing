@@ -25,6 +25,16 @@ const Flowchart = ({ editorRef }: any | null) => {
 
   return (
     <div>
+      <div className="flex justify-center items-center">
+        All Variables:{" >> "}
+      </div>
+      <div className="flex flex-row">
+        {getDistinctVariables(code).map((val, i) => (
+          <div key={i} className="m-5 text-white rounded-xl bg-red-700 p-5">
+            <p>{val}</p>
+          </div>
+        ))}
+      </div>
       <CFG code={code} />
       <div className="flex flex-row">
         <button
@@ -33,16 +43,6 @@ const Flowchart = ({ editorRef }: any | null) => {
         >
           Load Code
         </button>
-        <span className="flex justify-center items-center">
-          All Variables:{" >> "}
-        </span>
-        <div className="flex flex-row">
-          {getDistinctVariables(code).map((val, i) => (
-            <div key={i} className="m-5 text-white rounded-xl bg-red-700 p-5">
-              <p>{val}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

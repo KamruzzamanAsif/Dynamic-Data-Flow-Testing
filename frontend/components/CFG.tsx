@@ -9,6 +9,13 @@ interface CFGProps {
 mermaid.initialize({
   startOnLoad: true,
   theme: "default",
+  // Set custom configuration options for Mermaid
+  // For example, you can adjust the width and height
+  flowchart: {
+    useMaxWidth: false,
+    width: 800, // Set your desired width
+    height: 600, // Set your desired height
+  },
 });
 
 const CFG = ({ code }: CFGProps) => {
@@ -22,7 +29,7 @@ const CFG = ({ code }: CFGProps) => {
   return (
     <div key={code} className="flex flex-col justify-center items-center">
       {graphs.map((graph, i) => (
-        <div key={i}>
+        <div key={i} className="mb-4">
           <div key={code} className={`mermaid bg-blue-200 w-full h-full`}>
             {graph}
           </div>
