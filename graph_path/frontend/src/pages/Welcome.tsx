@@ -41,8 +41,7 @@ const WelcomePage: React.FC = () => {
     console.log("Whole Graph", graphObject);
 
     myGraph.findAndSoteAllTypesofNodes();
-    const AD_paths = myGraph.getAllDefinitionPaths();
-    console.log("AD paths", AD_paths);
+    
 
     const ACU_paths = myGraph.getAllCusePaths();
     console.log("ACU paths", ACU_paths);
