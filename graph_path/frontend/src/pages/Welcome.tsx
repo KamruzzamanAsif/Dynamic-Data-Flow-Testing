@@ -43,6 +43,21 @@ const WelcomePage: React.FC = () => {
     myGraph.findAndSoteAllTypesofNodes();
     const AD_paths = myGraph.getAllDefinitionPaths();
     console.log("AD paths", AD_paths);
+
+    const ACU_paths = myGraph.getAllCusePaths();
+    console.log("ACU paths", ACU_paths);
+
+    const APU_paths = myGraph.getAllPusePaths();
+    console.log("APU paths", APU_paths);
+
+    const AU_paths = myGraph.getAllDUPaths();
+    console.log("ADUP paths", AU_paths);
+
+    const APUC_paths = myGraph.getAllPuseSomeCusePaths();
+    console.log("APUC paths", APUC_paths);
+
+    const ACUP_paths = myGraph.getAllPuseSomeCusePaths();
+    console.log("ACUP paths", ACUP_paths);
   };
 
   return (
