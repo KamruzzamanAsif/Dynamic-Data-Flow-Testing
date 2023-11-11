@@ -377,6 +377,81 @@ class Graph {
 
     return paths;
   }
+
+  private allDuPaths: string[] = [];
+
+  getAllDuPaths(): string[] {
+    // Find paths from each "Define" node to at least one "c-use" node and one "p-use" node
+    this.definition_nodes.forEach(definitionNode => {
+      let cPaths = this.findAllPathsToCuse(definitionNode);
+      let pPaths = this.findAllPathsToPuse(definitionNode);
+
+      // Ensure there is at least one "c-use" path and one "p-use" path
+      if (cPaths.length > 0 && pPaths.length > 0) {
+        // Concatenate "c-use" paths with "p-use" paths
+        for (let cPath of cPaths) {
+          for (let pPath of pPaths) {
+            let concatenatedPath = [...cPath, ...pPath].join(', ');
+            this.allDuPaths.push(concatenatedPath);
+          }
+        }
+      }
+    });
+
+    return this.allDuPaths;
+  }
+
+  findAllPathsToUses(node: Node): string[][] {
+    const paths: string[][] = [];
+  
+    // Helper function to recursively find paths
+    const findPaths = (currentNode: Node, currentPath: string[]): void => {
+      // Add the current node to the path
+      let pathString = this.path_extractor(currentNode.label);
+      currentPath.push(pathString);
+  
+      // If the current node is a "use" node, add the current path to the result
+      if (currentNode.label.includes("use")) {
+        paths.push([...currentPath]);
+      }
+  
+      // Recursively explore parents (backward direction)
+      if (currentNode.parent) {
+        for (const parent of currentNode.parent) {
+          findPaths(parent, currentPath);
+        }
+      }
+  
+      // Remove the current node from the path when backtracking
+      currentPath.pop();
+    };
+  
+    // Start the traversal from the given node
+    findPaths(node, []);
+  
+    return paths;
+  }
+  
+  // Add this function to the Graph class
+  getAllUsesPaths(): string[] {
+    const allUsesPaths: string[] = [];
+  
+    // Find paths from the definition of each variable to every use of that variable
+    this.definition_nodes.forEach(definitionNode => {
+      // Find backward paths to "use" nodes
+      let usePaths = this.findAllPathsToUses(definitionNode);
+  
+      // Concatenate paths and add to the result
+      usePaths.forEach(usePath => {
+        let concatenatedPath = usePath.join(', ');
+        allUsesPaths.push(concatenatedPath);
+      });
+    });
+  
+    return allUsesPaths;
+  }
+  
+
 }
 
 export default Graph;
