@@ -42,6 +42,7 @@ export default function makeGraph(
       (lines[i].includes(`= ${variable}`) || ((lines[i].includes("printf")) && lines[i].includes(`${variable}`))) && isVariableDefined
     ) {
       // Variable is on the right side of an assignment after it has been defined
+      console.log("printf aseto bhai")
       currentNode.label += i.toString() + ` ${variable} : c-use, `;
       //continue;
     }
@@ -49,25 +50,32 @@ export default function makeGraph(
     // Check for expressions involving the variable
     if (isVariableDefined) {
       console.log('Defined inside C-USE', variable)
+      
       if (lines[i].includes(`+ ${variable}`) || lines[i].includes(`- ${variable}`) ||
         lines[i].includes(`* ${variable}`) || lines[i].includes(`/ ${variable}`) ||
         lines[i].includes(`% ${variable}`) || (lines[i].includes("printf"))) {
         // Variable is involved in a computation
         currentNode.label += i.toString() + ` ${variable} : c-use, `;
-        continue;
+        //continue;
 
       }
     }
 
-    // Check for p-use
-    // if (lines[i].includes('if') || lines[i].includes('while') || lines[i].includes('for') || lines[i].includes('do')) {
+    //Check for p-use
+    if (lines[i].includes('if') || lines[i].includes('while') || lines[i].includes('for') || lines[i].includes('do')) {
 
-    //   // console.log('INSIDE CHECKING p-use');
-    //   console.log('INSIDE P-USE: ', variable)
-    //   currentNode.label += i.toString() + ` ${variable} : p-use, `;
-    //   // continue;
-    //   // }
-    // }
+      // console.log('INSIDE CHECKING p-use');
+      //console.log('INSIDE P-USE: ', variable)
+      if (lines[i].includes(`${variable}`)) {
+        console.log('INSIDE P-USE: ', variable)
+        if (!currentNode.label.includes(i.toString()))
+          currentNode.label += i.toString() + ` ${variable} : p-use, `;
+        else
+          currentNode.label += ` ${variable} : p-use, `;
+      }
+      // continue;
+      // }
+    }
 
     if (
       lines[i].includes("if") ||
@@ -76,11 +84,7 @@ export default function makeGraph(
     ) {
 
       if (currentNode.label === "") {
-        if (lines[i].includes(`${variable}`)) {
-          console.log('INSIDE P-USE: ', variable)
-          currentNode.label += i.toString() + ` ${variable} : p-use, `;
-        }
-        else currentNode.label = i.toString() + ", "
+        currentNode.label = i.toString() + ", "
       }
 
 
@@ -119,7 +123,8 @@ export default function makeGraph(
         endNode.addChild(startNode)
       }
     } else {
-      currentNode.label += i.toString() + ", "
+      if (!currentNode.label.includes(i.toString()))
+        currentNode.label += i.toString() + ",  "
     }
 
   }

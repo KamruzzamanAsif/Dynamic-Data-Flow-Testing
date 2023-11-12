@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import CFG from "../CFG";
 import { getDistinctVariables } from "../libs/CFGRender";
 
-const defaultCode = `#include <stdio.h>
+export const defaultCode = `#include <stdio.h>
 void main()
 {
     int num1, rem1;
@@ -10,10 +10,12 @@ void main()
     printf("Input an integer : ");
     scanf("%d", &num1);
     rem1 = num1 % 2;
-    if (rem1 == 0)
+    if (rem1 == 0) {
         printf("%d is an even integer", num1);
-    else
+    }
+    else {
         printf("%d is an odd integer", num1);
+    }
 }`;
 
 const Flowchart = ({ editorRef }: any | null) => {

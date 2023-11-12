@@ -62,7 +62,7 @@ export default function getCFGRender(code: string): string[] {
     renderString = `flowchart TD`
     DFS(startNode)
     console.log(renderString)
-    graphs.push(renderString);
+    graphs.push(processRenderedString(renderString));
   }
 
 
@@ -74,6 +74,60 @@ export default function getCFGRender(code: string): string[] {
   // console.log(renderString)
 
   return graphs;
+}
+
+function processRenderedString(data: string): string {
+  // let data = "flowchart TD;\nS(Start)-->1(1,  2,  3,  4,  5,  6,  7 num1 : Define, 8 num1 : c-use, );\n1(1,  2,  3,  4,  5,  6,  7 num1 : Define, 8 num1 : c-use, )-->9(9, );\n9(9, )-->10(10,  );\n9(9, )-->11(11, 12,  13 num1 : c-use, 13 num1 : c-use, 14,  15,  );\n10(10,  )-->11(11, 12,  13 num1 : c-use, 13 num1 : c-use, 14,  15,  );\n11(11, 12,  13 num1 : c-use, 13 num1 : c-use, 14,  15,  )-->E(End)"
+  let words = data.split('\n');
+  let new_data = "";
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] == 'flowchart TD;') {
+      new_data += words[i] + '\n';
+      continue;
+    };
+
+    new_data += processLine(words[i]) + '\n';
+    // console.log(processLine(words[i]));
+  }
+
+  return new_data;
+}
+
+function processLine(input: string): string {
+
+  const parts = input.split("-->");
+
+  if (parts.length !== 2) {
+    // Invalid line format
+    return input;
+  }
+
+  const processedParts = parts.map(part => {
+    let new_arr = []
+    const elements = part.trim().split('(');
+
+    let num = parseInt(elements[0], 10);
+    let snum = num.toString();
+
+    if (isNaN(num)) {
+      new_arr.push(elements[0]);
+    } else {
+      new_arr.push(snum);
+    }
+
+
+    const regex = /\(([^)]+)\)/g;
+
+    let match;
+    while ((match = regex.exec(part)) !== null) {
+      new_arr.push('(' + match[1] + ')');
+    }
+
+    return new_arr.join('');
+  });
+
+  let ans = processedParts.join("-->");
+  return ans + ';';
 }
 
 function DFS(node: Node) {
