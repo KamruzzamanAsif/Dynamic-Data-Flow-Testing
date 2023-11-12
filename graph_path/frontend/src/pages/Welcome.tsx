@@ -39,19 +39,34 @@ const WelcomePage: React.FC = () => {
     myGraph.findAndSoteAllTypesofNodes();
 
     const ACU_paths = myGraph.getAllCusePaths();
-    console.log("ACU paths", ACU_paths, "Count: ", ACU_paths.length);
+    console.log("ok, ACU paths", ACU_paths, "Count: ", ACU_paths.length);
 
     const APU_paths = myGraph.getAllPusePaths();
-    console.log("APU paths", APU_paths, "Count: ", APU_paths.length);
+    console.log("ok, APU paths", APU_paths, "Count: ", APU_paths.length);
 
     const AU_paths = myGraph.getAllDUPaths();
-    console.log("ADUP paths", AU_paths, "Count: ", AU_paths.length);
+    console.log(
+      "[ok, but have some extra paths] ADUP paths",
+      AU_paths,
+      "Count: ",
+      AU_paths.length
+    );
 
     const APUC_paths = myGraph.getAllPuseSomeCusePaths();
-    console.log("APUC paths", APUC_paths, "Count: ", APUC_paths.length);
+    console.log(
+      "[ok, but have some extra paths] APUC paths",
+      APUC_paths,
+      "Count: ",
+      APUC_paths.length
+    );
 
     const ACUP_paths = myGraph.getAllPuseSomeCusePaths();
-    console.log("ACUP paths", ACUP_paths, "Count: ", ACUP_paths.length);
+    console.log(
+      "[ok, but have some extra paths] ACUP paths",
+      ACUP_paths,
+      "Count: ",
+      ACUP_paths.length
+    );
   };
 
   return (

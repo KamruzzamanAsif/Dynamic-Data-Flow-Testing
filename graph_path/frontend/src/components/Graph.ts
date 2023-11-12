@@ -250,10 +250,11 @@ class Graph {
   //***********GET all-p/some-c PATH(APU+C paths) Starts**************/
   getAllPuseSomeCusePaths(): string[] {
     // Find paths from each "Define" node to at least one "c-use" node
+
     this.definition_nodes.forEach(definitionNode => {
       let paths = this.findAllPathsToPuse(definitionNode);
 
-      console.log(paths)
+      // console.log(paths)
       if (paths.length == 0) {
         paths = this.findAllPathsToCuse(definitionNode);
       }
@@ -353,7 +354,7 @@ class Graph {
 
     return paths;
   }
-  
+
   // this function finds all p-paths for a definition node
   findAllPathsToPuse(node: Node): string[][] {
     const paths: string[][] = [];
