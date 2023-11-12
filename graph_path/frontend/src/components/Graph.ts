@@ -259,7 +259,7 @@ class Graph {
     this.definition_nodes.forEach(definitionNode => {
       let paths = this.findAllDCPathsToPuse(definitionNode);
 
-      console.log("All DC Paths to P use\n", paths);
+      // console.log("All DC Paths to P use\n", paths);
       if (paths.length == 0) {
         paths = this.findAllDCPathsToCuse(definitionNode);
       }
@@ -268,38 +268,46 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        //! Previously you used, allDuPaths array, I replaced this with allPsomeC
-        //! Previously you had extra paths, but now when i replaced you had a missing path
-        //! please check it
         this.allPsomeC.add(this.make_path(concatenatedPath));
       }
     });
+
+    // remove one length paths from allPsomeC
+    for(const path of this.allPsomeC) {
+      if(path.split(" -> ").length == 1) {
+        this.allPsomeC.delete(path);
+      }
+    }
 
     return Array.from(this.allPsomeC);
   }
 
   //***********GET all-c/some-p PATH(ACU+P paths) Starts**************/
-  getallCsomeP(): string[] {
+  getAllCSomeP(): string[] {
 
     // Find paths from each "Define" node to at least one "c-use" node
     this.definition_nodes.forEach(definitionNode => {
 
-      let paths = this.findAllPathsToCuse(definitionNode);
+      let paths = this.findAllDCPathsToCuse(definitionNode);
 
       if (paths.length == 0) {
-        paths = this.findAllPathsToPuse(definitionNode);
+        paths = this.findAllDCPathsToPuse(definitionNode);
       }
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        //! Previously you used, allDuPaths array, I replaced this with allCsomeP
-        //! Previously you had extra paths, but now when i replaced you had a missing path
-        //! please check it
+      
         this.allCsomeP.add(this.make_path(concatenatedPath));
       }
     });
+
+    for(const path of this.allCsomeP) {
+      if(path.split(" -> ").length == 1) {
+        this.allCsomeP.delete(path);
+      }
+    }
 
     return Array.from(this.allCsomeP);
   }
@@ -494,14 +502,17 @@ class Graph {
   // this function finds all c-paths for a definition node
   findAllDCPathsToCuse(node: Node): string[][] {
     const paths: string[][] = [];
+    const selfNode = node;
 
     // Helper function to recursively find paths
     const findPaths = (currentNode: Node, currentPath: string[]): void => {
       // Add the current node to the path
       const pathString = this.path_extractor(currentNode.label);
       currentPath.push(pathString);
+
+      // console.log(currentNode.label)
       
-      if (currentNode.label.includes("Define")) {
+      if (currentNode.label.includes("Define") && currentNode != selfNode) {
         return;
       }
       

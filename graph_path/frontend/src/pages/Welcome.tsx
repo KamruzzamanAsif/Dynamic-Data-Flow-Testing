@@ -73,12 +73,11 @@ const WelcomePage: React.FC = () => {
     // const ACU_paths = myGraph.getAllCusePaths();
     // console.log("[ok], ACU paths", ACU_paths, "Count: ", ACU_paths.length);
 
-    //! check it
     const APUC_paths = myGraph.getAllPSomeC();
     console.log("APUC paths\n", APUC_paths, "\nCount: ", APUC_paths.length);
 
-    //! check it
-    // const ACUP_paths = myGraph.getAllCuseSomePusePaths();
+    const ACUP_paths = myGraph.getAllCSomeP();
+    console.log("ACUP paths\n", ACUP_paths, "\nCount: ", ACUP_paths.length);
     
 
     const ADU_paths = myGraph.getAllDUPaths();
