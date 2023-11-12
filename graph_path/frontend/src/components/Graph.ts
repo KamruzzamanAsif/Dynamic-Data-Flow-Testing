@@ -321,7 +321,12 @@ class Graph {
       });
     });
 
-    return Array.from(allUsesPaths);
+    const arr = Array.from(allUsesPaths);
+
+    // Find and log the minimum length paths
+    // const result: string[] = this.findMinLengthPaths(arr);
+
+    return arr;
   }
 
   //***********Helper Function to calculate actual Paths get() func**************/

@@ -35,7 +35,7 @@ export default function makeGraph(
       console.log('INSIDE DEFINE-SCANF', variable)
       currentNode.label += i.toString() + ` ${variable} : Define, `;
       isVariableDefined = true;
-      continue;
+      //continue;
     }
 
     if (
@@ -43,7 +43,7 @@ export default function makeGraph(
     ) {
       // Variable is on the right side of an assignment after it has been defined
       currentNode.label += i.toString() + ` ${variable} : c-use, `;
-      continue;
+      //continue;
     }
 
     // Check for expressions involving the variable
@@ -60,14 +60,14 @@ export default function makeGraph(
     }
 
     // Check for p-use
-    if (lines[i].includes('if') || lines[i].includes('while') || lines[i].includes('for') || lines[i].includes('do')) {
+    // if (lines[i].includes('if') || lines[i].includes('while') || lines[i].includes('for') || lines[i].includes('do')) {
 
-      // console.log('INSIDE CHECKING p-use');
-      console.log('INSIDE P-USE: ', variable)
-      currentNode.label += i.toString() + ` ${variable} : p-use, `;
-      // continue;
-      // }
-    }
+    //   // console.log('INSIDE CHECKING p-use');
+    //   console.log('INSIDE P-USE: ', variable)
+    //   currentNode.label += i.toString() + ` ${variable} : p-use, `;
+    //   // continue;
+    //   // }
+    // }
 
     if (
       lines[i].includes("if") ||
@@ -76,8 +76,13 @@ export default function makeGraph(
     ) {
 
       if (currentNode.label === "") {
-        currentNode.label = i.toString() + ", "
+        if (lines[i].includes(`${variable}`)) {
+          console.log('INSIDE P-USE: ', variable)
+          currentNode.label += i.toString() + ` ${variable} : p-use, `;
+        }
+        else currentNode.label = i.toString() + ", "
       }
+
 
       let IFExists = lines[i].includes("if")
       let FORExists = lines[i].includes("for")

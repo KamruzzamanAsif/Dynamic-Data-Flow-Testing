@@ -41,18 +41,13 @@ const WelcomePage: React.FC = () => {
     3(3 payment : Define, )-->4(4, );
     4(4, )-->15(15, );
     4(4, )-->5(5, 6, );
-    5(5, 6, )-->7(7 payment: c-use, );
-    5(5, 6, )-->7(7 payment: Define, );
-    5(5, 6, )-->8(8, 9, 10 payment: c-use, );
-    5(5, 6, )-->8(8, 9, 10 payment: Define, );
-    7(7 payment: c-use, )-->14(14, );
-    7(7 payment: Define, )-->14(14, );
-    8(8, 9, 10 payment: c-use, )-->11(11 payment : p-use, );
-    8(8, 9, 10 payment: define, )-->11(11 payment : p-use, );
-    11(11 payment : p-use, )-->12(12 payment : c-use, );
-    11(11 payment : p-use, )-->12(12 payment : Define, );
+    5(5, 6, )-->7(7 payment: Define, payment: c-use, );
+    5(5, 6, )-->8(8, 9, 10 payment: Define, payment: c-use, );
+    7(7 payment: Define, payment: c-use, )-->14(14, );
+    8(8, 9, 10 payment: Define, payment: c-use, )-->11(11 payment : p-use, );
+    11(11 payment : p-use, )-->12(12 payment : Define, payment : c-use, );
     11(11 payment : p-use, )-->13(13, );
-    12(12 payment : Define, )-->13(13, );
+    12(12 payment : Define, payment : c-use, )-->13(13, );
     13(13, )-->14(14, );
     14(14, )-->15(15, );
     15(15, )-->16(16 payment : c-use, 17, );
@@ -62,6 +57,7 @@ const WelcomePage: React.FC = () => {
     // const myGraph2 = new Graph();
 
     const graphObject = myGraph.createGraph(graphString2);
+    // console.log("Whole Graph", graphObject);
 
     myGraph.findAndSoteAllTypesofNodes();
 
@@ -88,7 +84,9 @@ const WelcomePage: React.FC = () => {
     const ADU_paths = myGraph.getAllDUPaths();
     // console.log("[ok] AU paths", ADU_paths, "Count: ", ADU_paths.length);
 
-    //! where is AD (All Definitions) paths
+    
+    // const AD_paths = myGraph.getAllDefinitionPaths();
+    // console.log("[ok] AD paths", AD_paths);
   };
 
   return (
