@@ -92,6 +92,8 @@ const WelcomePage: React.FC = () => {
     console.log("[ok] AU paths", ADU_paths, "Count: ", ADU_paths.length);
 
     //! where is AD (All Definitions) paths
+    const AD_paths = myGraph.getAllDefinitionPaths();
+    console.log("[ok] AD paths", AD_paths);
   };
 
   return (

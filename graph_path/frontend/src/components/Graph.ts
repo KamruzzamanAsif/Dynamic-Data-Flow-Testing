@@ -518,6 +518,110 @@ class Graph {
 
   
 
+
+
+
+
+  /* ***************** Do your work in the upper section******************************* */
+
+  ////////////// DONT MODIFY this section//////////////
+
+  //***********GET ALL DEFINITION PATH(AD paths) Starts**************/
+  getAllDefinitionPaths(): string[] {
+    // Find paths from each "Define" node to at least one "c-use" node
+    this.definition_nodes.forEach(definitionNode => {
+      let c_paths = this.my_findAllPathsToCuse(definitionNode);
+      let p_paths = this.my_findAllPathsToPuse(definitionNode);
+      // [note: as per the definition of AD paths we need to at least one "c-use" node
+      // of one "p-use" node.]
+      console.log("c paths", c_paths)
+      console.log("p paths", p_paths)
+      
+      if(c_paths.length > 0) {
+        for(let i = 0; i<c_paths.length; i++) {
+          if(c_paths[i].length > 2){
+            this.allDefinitionPaths.push(c_paths[i]);
+            break;
+          }
+        }
+      }
+      else{
+        for(let i = 0; i<p_paths.length; i++) {
+          if(p_paths[i].length > 2){
+            this.allDefinitionPaths.push(p_paths[i]);
+            break;
+          }
+        }
+      }
+    });
+
+    return this.allDefinitionPaths;
+  }
+
+  // this function finds all c-paths for a definition node
+  my_findAllPathsToCuse(node: Node): string[] {
+    const paths: string[] = [];
+
+    // Helper function to recursively find paths
+    const findPaths = (currentNode: Node, currentPath: string[]): void => {
+      // Add the current node to the path
+      let pathString = this.path_extractor(currentNode.label);
+      currentPath.push(pathString);
+
+      // If the current node is a "c-use" node, add the current path to the result
+      if (currentNode.label.includes("c-use")) {
+        paths.push(currentPath.join(' -> '));
+      }
+
+      // Recursively explore children
+      if (currentNode.children) {
+        for (const child of currentNode.children) {
+          findPaths(child, [...currentPath]); // Create a copy of the current path
+        }
+      }
+
+      // Remove the current node from the path when backtracking
+      currentPath.pop();
+    };
+
+    // Start the traversal from the given "Define" node
+    findPaths(node, []);
+
+    return paths;
+  }
+
+  // this function finds all p-paths for a definition node
+  my_findAllPathsToPuse(node: Node): string[] {
+    const paths: string[] = [];
+
+    // Helper function to recursively find paths
+    const findPaths = (currentNode: Node, currentPath: string[]): void => {
+      // Add the current node to the path
+      let pathString = this.path_extractor(currentNode.label);
+      currentPath.push(pathString);
+
+      // If the current node is a "c-use" node, add the current path to the result
+      if (currentNode.label.includes("p-use")) {
+        paths.push(currentPath.join(' -> '));
+      }
+
+      // Recursively explore children
+      if (currentNode.children) {
+        for (const child of currentNode.children) {
+          findPaths(child, [...currentPath]); // Create a copy of the current path
+        }
+      }
+
+      // Remove the current node from the path when backtracking
+      currentPath.pop();
+    };
+
+    // Start the traversal from the given "Define" node
+    findPaths(node, []);
+
+    return paths;
+  }
+  //***********GET ALL DEFINITIONS PATH ENDS**************/
 }
 
 export default Graph;
