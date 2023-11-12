@@ -1,9 +1,7 @@
-import React from 'react';
-import Graph from '../components/Graph'
-
+import React from "react";
+import Graph from "../components/Graph";
 
 const WelcomePage: React.FC = () => {
-  
   const handleClick = () => {
     // Example usage:
 
@@ -13,7 +11,6 @@ const WelcomePage: React.FC = () => {
     // 9(9, )-->13(13, );
     // 10(10, 11, 12, )-->13(13, );
     // 13(13, )-->E(End)`;
-
 
     // Book Example Graph (for varibale 'work')
     const graphString = `S(Start)-->0(0, 1 rem1 : Define);
@@ -35,28 +32,26 @@ const WelcomePage: React.FC = () => {
     12(12, )-->13(13, );
     13(13, )-->E(End)`;
 
-
     const myGraph = new Graph();
     const graphObject = myGraph.createGraph(graphString);
     console.log("Whole Graph", graphObject);
 
     myGraph.findAndSoteAllTypesofNodes();
-    
 
     const ACU_paths = myGraph.getAllCusePaths();
-    console.log("ACU paths", ACU_paths);
+    console.log("ACU paths", ACU_paths, "Count: ", ACU_paths.length);
 
     const APU_paths = myGraph.getAllPusePaths();
-    console.log("APU paths", APU_paths);
+    console.log("APU paths", APU_paths, "Count: ", APU_paths.length);
 
     const AU_paths = myGraph.getAllDUPaths();
-    console.log("ADUP paths", AU_paths);
+    console.log("ADUP paths", AU_paths, "Count: ", AU_paths.length);
 
     const APUC_paths = myGraph.getAllPuseSomeCusePaths();
-    console.log("APUC paths", APUC_paths);
+    console.log("APUC paths", APUC_paths, "Count: ", APUC_paths.length);
 
     const ACUP_paths = myGraph.getAllPuseSomeCusePaths();
-    console.log("ACUP paths", ACUP_paths);
+    console.log("ACUP paths", ACUP_paths, "Count: ", ACUP_paths.length);
   };
 
   return (
