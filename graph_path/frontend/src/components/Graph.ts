@@ -312,7 +312,6 @@ class Graph {
     this.definition_nodes.forEach(definitionNode => {
       // Find backward paths to "use" nodes
       const usePaths = this.findAllPathsToUse(definitionNode);
-      console.log('USE: ', definitionNode);
 
       // Concatenate paths and add to the result
       usePaths.forEach(usePath => {
@@ -324,9 +323,9 @@ class Graph {
     const arr = Array.from(allUsesPaths);
 
     // Find and log the minimum length paths
-    const result: string[] = this.findMinLengthPaths(arr);
+    // const result: string[] = this.findMinLengthPaths(arr);
 
-    return result;
+    return arr;
   }
 
   //***********Helper Function to calculate actual Paths get() func**************/
@@ -496,13 +495,16 @@ class Graph {
       path.split(" -> ").map(Number)
     );
 
+    const endNodes: number[] = parsedPaths.map(path => path[path.length - 1]);
+
+    // Find the minimum length for each end node, excluding paths with length <= 1
     const minLengths: { [key: number]: number[] } = {};
-
-    parsedPaths.forEach(path => {
-      const endNode = path[path.length - 1];
-
-      if (minLengths[endNode] === undefined || path.length < minLengths[endNode].length) {
-        minLengths[endNode] = path.slice();
+    endNodes.forEach((endNode, index) => {
+      const path = parsedPaths[index];
+      if (path.length > 1) {
+        if (minLengths[endNode] === undefined || path.length < minLengths[endNode].length) {
+          minLengths[endNode] = path.slice();
+        }
       }
     });
 
@@ -514,6 +516,7 @@ class Graph {
     return result;
   }
 
+  
 
 }
 

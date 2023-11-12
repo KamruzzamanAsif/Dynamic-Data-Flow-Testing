@@ -36,19 +36,18 @@ const WelcomePage: React.FC = () => {
 
     const graphString2 = `S(Start)-->0(0 payment : Define, 1, );
     0(0 payment : Define, 1, )-->2(2, );
-    2(2, )-->3(3 payment : Define, );
     2(2, )-->16(16 payment : c-use, 17, );
+    2(2, )-->3(3 payment : Define, );
     3(3 payment : Define, )-->4(4, );
-    4(4, )-->5(5, 6, );
     4(4, )-->15(15, );
-    5(5, 6, )-->7(7 payment: c-use, );
-    5(5, 6, )-->8(8, 9, 10 payment: c-use, );
-    7(7 payment: c-use, )-->14(14, );
-    7(7 payment: define, )-->14(14, );
-    8(8, 9, 10 payment: c-use, )-->11(11 payment : p-use, );
-    11(11 payment : p-use, )-->12(12 payment : c-use, );
+    4(4, )-->5(5, 6, );
+    5(5, 6, )-->7(7 payment: Define, payment: c-use, );
+    5(5, 6, )-->8(8, 9, 10 payment: Define, payment: c-use, );
+    7(7 payment: Define, payment: c-use, )-->14(14, );
+    8(8, 9, 10 payment: Define, payment: c-use, )-->11(11 payment : p-use, );
+    11(11 payment : p-use, )-->12(12 payment : Define, payment : c-use, );
     11(11 payment : p-use, )-->13(13, );
-    12(12 payment : define, )-->13(13, );
+    12(12 payment : Define, payment : c-use, )-->13(13, );
     13(13, )-->14(14, );
     14(14, )-->15(15, );
     15(15, )-->16(16 payment : c-use, 17, );
