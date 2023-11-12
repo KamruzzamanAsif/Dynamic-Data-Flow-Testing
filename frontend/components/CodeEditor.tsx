@@ -9,10 +9,12 @@ void main()
     printf("Input an integer : ");
     scanf("%d", &num1);
     rem1 = num1 % 2;
-    if (rem1 == 0)
+    if (rem1 == 0) {
         printf("%d is an even integer", num1);
-    else
+    }
+    else {
         printf("%d is an odd integer", num1);
+    }
 }`;
 
 const CodeEditor = forwardRef((props, ref: any | null) => {
