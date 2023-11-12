@@ -65,23 +65,23 @@ const WelcomePage: React.FC = () => {
     // console.log("[ok], AU paths", AU_paths, "Count: ", AU_paths.length);
 
     // APU Path good
-    // const APU_paths = myGraph.getAllPusePaths();
-    // console.log("[ok], APU paths", APU_paths, "Count: ", APU_paths.length);
+    const APU_paths = myGraph.getAllPusePaths();
+    console.log("APU paths\n", APU_paths, "Count: ", APU_paths.length);
 
 
     // ACU Path good
-    // const ACU_paths = myGraph.getAllCusePaths();
-    // console.log("[ok], ACU paths", ACU_paths, "Count: ", ACU_paths.length);
+    const ACU_paths = myGraph.getAllCusePaths();
+    console.log("ACU paths\n", ACU_paths, "Count: ", ACU_paths.length);
 
     const APUC_paths = myGraph.getAllPSomeC();
-    console.log("APUC paths\n", APUC_paths, "\nCount: ", APUC_paths.length);
+    // console.log("APUC paths\n", APUC_paths, "\nCount: ", APUC_paths.length);
 
     const ACUP_paths = myGraph.getAllCSomeP();
-    console.log("ACUP paths\n", ACUP_paths, "\nCount: ", ACUP_paths.length);
+    // console.log("ACUP paths\n", ACUP_paths, "\nCount: ", ACUP_paths.length);
     
 
     const ADU_paths = myGraph.getAllDUPaths();
-    console.log("[ok] ADU paths", ADU_paths, "Count: ", ADU_paths.length);
+    // console.log("[ok] ADU paths", ADU_paths, "Count: ", ADU_paths.length);
 
     
     // const AD_paths = myGraph.getAllDefinitionPaths();

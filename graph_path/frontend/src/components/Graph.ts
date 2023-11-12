@@ -197,21 +197,23 @@ class Graph {
   getAllCusePaths(): string[] {
 
     // Find paths from each "Define" node to at least one "c-use" node
-    this.definition_nodes.forEach(cuseNode => {
-      const paths = this.findAllPathsToCuse(cuseNode);
-
-      // console.log(paths)
+    this.definition_nodes.forEach(definitionNode => {
+      let paths = this.findAllDCPathsToCuse(definitionNode);
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
       for (const path of paths) {
-
-        if (path.length > 0) {
-          const concatenatedPath = path.join(', '); // Concatenate strings in the row
-          this.allCusePaths.add(this.make_path(concatenatedPath));
-        }
+        const concatenatedPath = path.join(', '); // Concatenate strings in the row
+        this.allCusePaths.add(this.make_path(concatenatedPath));
       }
     });
+
+    // remove one length paths from allPsomeC
+    for(const path of this.allCusePaths) {
+      if(path.split(" -> ").length == 1) {
+        this.allCusePaths.delete(path);
+      }
+    }
 
     return Array.from(this.allCusePaths);
   }
@@ -221,8 +223,8 @@ class Graph {
 
 
     // Find paths from each "Define" node to at least one "c-use" node
-    this.definition_nodes.forEach(puseNode => {
-      const paths = this.findAllPathsToPuse(puseNode);
+    this.definition_nodes.forEach(definitionNode => {
+      let paths = this.findAllDCPathsToPuse(definitionNode);
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
@@ -231,6 +233,13 @@ class Graph {
         this.allPusePaths.add(this.make_path(concatenatedPath));
       }
     });
+
+    // remove one length paths from allPsomeC
+    for(const path of this.allPusePaths) {
+      if(path.split(" -> ").length == 1) {
+        this.allPusePaths.delete(path);
+      }
+    }
 
     return Array.from(this.allPusePaths);
   }
