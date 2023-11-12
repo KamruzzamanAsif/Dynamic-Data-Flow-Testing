@@ -321,7 +321,12 @@ class Graph {
       });
     });
 
-    return Array.from(allUsesPaths);
+    const arr = Array.from(allUsesPaths);
+
+    // Find and log the minimum length paths
+    const result: string[] = this.findMinLengthPaths(arr);
+
+    return result;
   }
 
   //***********Helper Function to calculate actual Paths get() func**************/
@@ -484,7 +489,32 @@ class Graph {
     findPaths(node, []);
 
     return paths;
-  }  
+  }
+
+  findMinLengthPaths(paths: string[]): string[] {
+    const parsedPaths: number[][] = paths.map(path =>
+      path.split(" -> ").map(Number)
+    );
+
+    const minLengths: { [key: number]: number[] } = {};
+
+    parsedPaths.forEach(path => {
+      const endNode = path[path.length - 1];
+
+      if (minLengths[endNode] === undefined || path.length < minLengths[endNode].length) {
+        minLengths[endNode] = path.slice();
+      }
+    });
+
+    // Convert the result to the desired format
+    const result: string[] = Object.values(minLengths).map(path =>
+      path.join(" -> ")
+    );
+
+    return result;
+  }
+
+
 }
 
 export default Graph;
