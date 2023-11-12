@@ -184,15 +184,18 @@ class Graph {
 
   /************ path arrays **************/
   allDefinitionPaths: string[] = [];
-  allCusePaths: string[] = [];
-  allPusePaths: string[] = [];
-  allDUPaths: string[] = [];
+  allCusePaths: Set<string> = new Set();
+  allPusePaths: Set<string> = new Set();
+  allDUPaths: Set<string> = new Set();
+  addPuseSomeCUsePaths: Set<string> = new Set();
+  allCuseSomePusePaths: Set<string> = new Set();
   allUPaths: string[] = [];
   /***************************************/
 
 
   //***********GET ALL C-use PATH(ACU paths) Starts**************/
   getAllCusePaths(): string[] {
+
     // Find paths from each "Define" node to at least one "c-use" node
     this.definition_nodes.forEach(cuseNode => {
       const paths = this.findAllPathsToCuse(cuseNode);
@@ -205,16 +208,18 @@ class Graph {
 
         if (path.length > 0) {
           const concatenatedPath = path.join(', '); // Concatenate strings in the row
-          this.allCusePaths.push(this.make_path(concatenatedPath));
+          this.allCusePaths.add(this.make_path(concatenatedPath));
         }
       }
     });
 
-    return this.allCusePaths;
+    return Array.from(this.allCusePaths);
   }
 
   //***********GET ALL P-Use PATH(APU paths) Starts**************/
   getAllPusePaths(): string[] {
+
+
     // Find paths from each "Define" node to at least one "c-use" node
     this.definition_nodes.forEach(puseNode => {
       const paths = this.findAllPathsToPuse(puseNode);
@@ -223,11 +228,11 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        this.allPusePaths.push(this.make_path(concatenatedPath));
+        this.allPusePaths.add(this.make_path(concatenatedPath));
       }
     });
 
-    return this.allPusePaths;
+    return Array.from(this.allPusePaths);
   }
 
   //***********GET ALL DU PATH(ADU paths) Starts**************/
@@ -240,11 +245,11 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        this.allDUPaths.push(this.make_path(concatenatedPath));
+        this.allDUPaths.add(this.make_path(concatenatedPath));
       }
     });
 
-    return this.allDUPaths;
+    return Array.from(this.allDUPaths);
   }
 
   //***********GET all-p/some-c PATH(APU+C paths) Starts**************/
@@ -254,7 +259,7 @@ class Graph {
     this.definition_nodes.forEach(definitionNode => {
       let paths = this.findAllPathsToPuse(definitionNode);
 
-      // console.log(paths)
+      console.log("All P some C", paths)
       if (paths.length == 0) {
         paths = this.findAllPathsToCuse(definitionNode);
       }
@@ -263,17 +268,22 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        this.allDUPaths.push(this.make_path(concatenatedPath));
+        //! Previously you used, allDuPaths array, I replaced this with addPuseSomeCUsePaths
+        //! Previously you had extra paths, but now when i replaced you had a missing path
+        //! please check it
+        this.addPuseSomeCUsePaths.add(this.make_path(concatenatedPath));
       }
     });
 
-    return this.allDUPaths;
+    return Array.from(this.addPuseSomeCUsePaths);
   }
 
   //***********GET all-c/some-p PATH(ACU+P paths) Starts**************/
   getAllCuseSomePusePaths(): string[] {
+
     // Find paths from each "Define" node to at least one "c-use" node
     this.definition_nodes.forEach(definitionNode => {
+
       let paths = this.findAllPathsToCuse(definitionNode);
 
       if (paths.length == 0) {
@@ -284,12 +294,38 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        this.allDUPaths.push(this.make_path(concatenatedPath));
+        //! Previously you used, allDuPaths array, I replaced this with allCuseSomePusePaths
+        //! Previously you had extra paths, but now when i replaced you had a missing path
+        //! please check it
+        this.allCuseSomePusePaths.add(this.make_path(concatenatedPath));
       }
     });
 
-    return this.allDUPaths;
+    return Array.from(this.allCuseSomePusePaths);
   }
+
+  //***********GET all use PATH(AU paths) Starts**************/
+  getAllUsesPaths(): string[] {
+    const allUsesPaths: Set<string> = new Set();
+
+    // Find paths from the definition of each variable to every use of that variable
+    this.definition_nodes.forEach(definitionNode => {
+      // Find backward paths to "use" nodes
+      const usePaths = this.findAllPathsToUse(definitionNode);
+      console.log('USE: ', definitionNode);
+
+      // Concatenate paths and add to the result
+      usePaths.forEach(usePath => {
+        const concatenatedPath = usePath.join(', ');
+        allUsesPaths.add(this.make_path(concatenatedPath));
+      });
+    });
+
+    return Array.from(allUsesPaths);
+  }
+
+  //***********Helper Function to calculate actual Paths get() func**************/
+
 
   // this function finds all DU for a definition node
   findAllDUPaths(node: Node): string[][] {
@@ -361,9 +397,14 @@ class Graph {
 
     // Helper function to recursively find paths
     const findPaths = (currentNode: Node, currentPath: string[]): void => {
+
+      // console.log("CURRENT: ", currentNode);
+
       // Add the current node to the path
       const pathString = this.path_extractor(currentNode.label);
       currentPath.push(pathString);
+      // console.log('PATH: ', pathString);
+
 
       // If the current node is a "p-use" node, add the current path to the result
       if (currentNode.label.includes("p-use")) {
@@ -387,7 +428,7 @@ class Graph {
     return paths;
   }
 
-  private allDuPaths: string[] = [];
+  private allDuPaths: Set<string> = new Set();
 
   getAllDuPaths(): string[] {
     // Find paths from each "Define" node to at least one "c-use" node and one "p-use" node
@@ -401,33 +442,37 @@ class Graph {
         for (const cPath of cPaths) {
           for (const pPath of pPaths) {
             const concatenatedPath = [...cPath, ...pPath].join(', ');
-            this.allDuPaths.push(concatenatedPath);
+            this.allDuPaths.add(this.make_path(concatenatedPath));
           }
         }
       }
     });
 
-    return this.allDuPaths;
+    return Array.from(this.allDUPaths);
   }
 
-  findAllPathsToUses(node: Node): string[][] {
+  findAllPathsToUse(node: Node): string[][] {
     const paths: string[][] = [];
 
     // Helper function to recursively find paths
     const findPaths = (currentNode: Node, currentPath: string[]): void => {
+
+      // console.log("CURRENT: ", currentNode);
+
       // Add the current node to the path
       const pathString = this.path_extractor(currentNode.label);
       currentPath.push(pathString);
 
-      // If the current node is a "use" node, add the current path to the result
-      if (currentNode.label.includes("use")) {
+
+      // If the current node is a "p-use" node, add the current path to the result
+      if (currentNode.label.includes("p-use") || currentNode.label.includes("c-use")) {
         paths.push([...currentPath]);
       }
 
-      // Recursively explore parents (backward direction)
-      if (currentNode.parent) {
-        for (const parent of currentNode.parent) {
-          findPaths(parent, currentPath);
+      // Recursively explore children
+      if (currentNode.children) {
+        for (const child of currentNode.children) {
+          findPaths(child, currentPath);
         }
       }
 
@@ -435,32 +480,11 @@ class Graph {
       currentPath.pop();
     };
 
-    // Start the traversal from the given node
+    // Start the traversal from the given "Define" node
     findPaths(node, []);
 
     return paths;
-  }
-
-  // Add this function to the Graph class
-  getAllUsesPaths(): string[] {
-    const allUsesPaths: string[] = [];
-
-    // Find paths from the definition of each variable to every use of that variable
-    this.definition_nodes.forEach(definitionNode => {
-      // Find backward paths to "use" nodes
-      const usePaths = this.findAllPathsToUses(definitionNode);
-
-      // Concatenate paths and add to the result
-      usePaths.forEach(usePath => {
-        const concatenatedPath = usePath.join(', ');
-        allUsesPaths.push(concatenatedPath);
-      });
-    });
-
-    return allUsesPaths;
-  }
-
-
+  }  
 }
 
 export default Graph;
