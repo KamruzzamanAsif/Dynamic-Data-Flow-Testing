@@ -104,7 +104,7 @@ class Graph {
     // Create other nodes
     // Remove the last lines as don't need it
     const trimmedLines = lines.filter(line => !line.includes("E(End)"));
-    console.log(trimmedLines)
+    // console.log(trimmedLines)
     this.createAllOtherNodes(trimmedLines);
 
     // now link all nodes
@@ -167,7 +167,7 @@ class Graph {
       const result = matches.join(', ');
       return result;
     } else {
-      console.log("No numbers found in the text.");
+      // console.log("No numbers found in the text.");
       return "";
     }
   }
@@ -187,8 +187,8 @@ class Graph {
   allCusePaths: Set<string> = new Set();
   allPusePaths: Set<string> = new Set();
   allDUPaths: Set<string> = new Set();
-  addPuseSomeCUsePaths: Set<string> = new Set();
-  allCuseSomePusePaths: Set<string> = new Set();
+  allPsomeC: Set<string> = new Set();
+  allCsomeP: Set<string> = new Set();
   allUPaths: string[] = [];
   /***************************************/
 
@@ -200,7 +200,7 @@ class Graph {
     this.definition_nodes.forEach(cuseNode => {
       const paths = this.findAllPathsToCuse(cuseNode);
 
-      console.log(paths)
+      // console.log(paths)
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
@@ -253,33 +253,33 @@ class Graph {
   }
 
   //***********GET all-p/some-c PATH(APU+C paths) Starts**************/
-  getAllPuseSomeCusePaths(): string[] {
+  getAllPSomeC(): string[] {
     // Find paths from each "Define" node to at least one "c-use" node
 
     this.definition_nodes.forEach(definitionNode => {
-      let paths = this.findAllPathsToPuse(definitionNode);
+      let paths = this.findAllDCPathsToPuse(definitionNode);
 
-      console.log("All P some C", paths)
+      console.log("All DC Paths to P use\n", paths);
       if (paths.length == 0) {
-        paths = this.findAllPathsToCuse(definitionNode);
+        paths = this.findAllDCPathsToCuse(definitionNode);
       }
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        //! Previously you used, allDuPaths array, I replaced this with addPuseSomeCUsePaths
+        //! Previously you used, allDuPaths array, I replaced this with allPsomeC
         //! Previously you had extra paths, but now when i replaced you had a missing path
         //! please check it
-        this.addPuseSomeCUsePaths.add(this.make_path(concatenatedPath));
+        this.allPsomeC.add(this.make_path(concatenatedPath));
       }
     });
 
-    return Array.from(this.addPuseSomeCUsePaths);
+    return Array.from(this.allPsomeC);
   }
 
   //***********GET all-c/some-p PATH(ACU+P paths) Starts**************/
-  getAllCuseSomePusePaths(): string[] {
+  getallCsomeP(): string[] {
 
     // Find paths from each "Define" node to at least one "c-use" node
     this.definition_nodes.forEach(definitionNode => {
@@ -294,14 +294,14 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        //! Previously you used, allDuPaths array, I replaced this with allCuseSomePusePaths
+        //! Previously you used, allDuPaths array, I replaced this with allCsomeP
         //! Previously you had extra paths, but now when i replaced you had a missing path
         //! please check it
-        this.allCuseSomePusePaths.add(this.make_path(concatenatedPath));
+        this.allCsomeP.add(this.make_path(concatenatedPath));
       }
     });
 
-    return Array.from(this.allCuseSomePusePaths);
+    return Array.from(this.allCsomeP);
   }
 
   //***********GET all use PATH(AU paths) Starts**************/
@@ -312,7 +312,7 @@ class Graph {
     this.definition_nodes.forEach(definitionNode => {
       // Find backward paths to "use" nodes
       const usePaths = this.findAllPathsToUse(definitionNode);
-      console.log('USE: ', definitionNode);
+      // console.log('USE: ', definitionNode);
 
       // Concatenate paths and add to the result
       usePaths.forEach(usePath => {
@@ -485,6 +485,81 @@ class Graph {
 
     return paths;
   }  
+
+  // this function finds all c-paths for a definition node
+  findAllDCPathsToCuse(node: Node): string[][] {
+    const paths: string[][] = [];
+
+    // Helper function to recursively find paths
+    const findPaths = (currentNode: Node, currentPath: string[]): void => {
+      // Add the current node to the path
+      const pathString = this.path_extractor(currentNode.label);
+      currentPath.push(pathString);
+      
+      if (currentNode.label.includes("Define")) {
+        return;
+      }
+      
+      // If the current node is a "c-use" node, add the current path to the result
+      if (currentNode.label.includes("c-use")) {
+        paths.push([...currentPath]);
+      }
+
+      // Recursively explore children
+      if (currentNode.children) {
+        for (const child of currentNode.children) {
+          findPaths(child, currentPath);
+        }
+      }
+
+      // Remove the current node from the path when backtracking
+      currentPath.pop();
+    };
+
+    // Start the traversal from the given "Define" node
+    findPaths(node, []);
+
+    return paths;
+  }
+
+  findAllDCPathsToPuse(node: Node): string[][] {
+    const paths: string[][] = [];
+    const selfNode = node;
+
+    // Helper function to recursively find paths
+    const findPaths = (currentNode: Node, currentPath: string[]): void => {
+      // Add the current node to the path
+      const pathString = this.path_extractor(currentNode.label);
+      currentPath.push(pathString);
+
+      // console.log(currentNode.label)
+      
+      if (currentNode.label.includes("Define") && currentNode != selfNode) {
+        return;
+      }
+      
+      // If the current node is a "p-use" node, add the current path to the result
+      if (currentNode.label.includes("p-use")) {
+        paths.push([...currentPath]);
+      }
+      
+      // Recursively explore children
+      if (currentNode.children) {
+        for (const child of currentNode.children) {
+          findPaths(child, currentPath);
+        }
+      }
+
+      // Remove the current node from the path when backtracking
+      currentPath.pop();
+    };
+
+    // Start the traversal from the given "Define" node
+    findPaths(node, []);
+
+    return paths;
+  }
+  
 }
 
 export default Graph;

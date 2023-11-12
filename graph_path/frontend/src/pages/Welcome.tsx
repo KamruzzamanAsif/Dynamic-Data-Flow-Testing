@@ -42,17 +42,17 @@ const WelcomePage: React.FC = () => {
     4(4, )-->15(15, );
     4(4, )-->5(5, 6, );
     5(5, 6, )-->7(7 payment: c-use, );
-    5(5, 6, )-->7(7 payment: define, );
+    5(5, 6, )-->7(7 payment: Define, );
     5(5, 6, )-->8(8, 9, 10 payment: c-use, );
-    5(5, 6, )-->8(8, 9, 10 payment: define, );
+    5(5, 6, )-->8(8, 9, 10 payment: Define, );
     7(7 payment: c-use, )-->14(14, );
-    7(7 payment: define, )-->14(14, );
+    7(7 payment: Define, )-->14(14, );
     8(8, 9, 10 payment: c-use, )-->11(11 payment : p-use, );
     8(8, 9, 10 payment: define, )-->11(11 payment : p-use, );
     11(11 payment : p-use, )-->12(12 payment : c-use, );
-    11(11 payment : p-use, )-->12(12 payment : define, );
+    11(11 payment : p-use, )-->12(12 payment : Define, );
     11(11 payment : p-use, )-->13(13, );
-    12(12 payment : define, )-->13(13, );
+    12(12 payment : Define, )-->13(13, );
     13(13, )-->14(14, );
     14(14, )-->15(15, );
     15(15, )-->16(16 payment : c-use, 17, );
@@ -61,55 +61,45 @@ const WelcomePage: React.FC = () => {
     const myGraph = new Graph();
     // const myGraph2 = new Graph();
 
-    const graphObject = myGraph.createGraph(graphString);
-    // console.log("Whole Graph", graphObject);
+    const graphObject = myGraph.createGraph(graphString2);
 
     myGraph.findAndSoteAllTypesofNodes();
 
     const AU_paths = myGraph.getAllUsesPaths();
-    console.log("[ok], AU paths", AU_paths, "Count: ", AU_paths.length);
+    // console.log("[ok], AU paths", AU_paths, "Count: ", AU_paths.length);
 
-    const APU_paths = myGraph.getAllPusePaths();
-    console.log("[ok], APU paths", APU_paths, "Count: ", APU_paths.length);
+    // APU Path good
+    // const APU_paths = myGraph.getAllPusePaths();
+    // console.log("[ok], APU paths", APU_paths, "Count: ", APU_paths.length);
 
-    const ACU_paths = myGraph.getAllCusePaths();
-    console.log("[ok], ACU paths", ACU_paths, "Count: ", ACU_paths.length);
 
-    //! check it
-    const APUC_paths = myGraph.getAllPuseSomeCusePaths();
-    console.log(
-      "[ok, but 1 c-use path missed that is mentioned in book] APUC paths",
-      APUC_paths,
-      "Count: ",
-      APUC_paths.length
-    );
+    // ACU Path good
+    // const ACU_paths = myGraph.getAllCusePaths();
+    // console.log("[ok], ACU paths", ACU_paths, "Count: ", ACU_paths.length);
 
     //! check it
-    const ACUP_paths = myGraph.getAllCuseSomePusePaths();
-    console.log(
-      "[ok, but have some extra paths] ACUP paths",
-      ACUP_paths,
-      "Count: ",
-      ACUP_paths.length
-    );
+    const APUC_paths = myGraph.getAllPSomeC();
+    console.log("APUC paths\n", APUC_paths, "\nCount: ", APUC_paths.length);
+
+    //! check it
+    // const ACUP_paths = myGraph.getAllCuseSomePusePaths();
+    
 
     const ADU_paths = myGraph.getAllDUPaths();
-    console.log("[ok] AU paths", ADU_paths, "Count: ", ADU_paths.length);
+    // console.log("[ok] AU paths", ADU_paths, "Count: ", ADU_paths.length);
 
     //! where is AD (All Definitions) paths
   };
 
   return (
-    <>
-      <div>
+    <div className="h-screen flex items-center justify-center">
         <button
           onClick={handleClick}
-          className="bg-blue-500 px-3 py-1 rounded-xl"
+          className="bg-black text-white text-xl px-6 py-2 rounded-md"
         >
           Click me
         </button>
       </div>
-    </>
   );
 };
 
