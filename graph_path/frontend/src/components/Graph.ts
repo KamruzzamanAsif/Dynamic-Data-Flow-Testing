@@ -593,9 +593,7 @@ class Graph {
         let c_paths = this.findAllPathsToCuse2(definitionNode);
         let p_paths = this.findAllPathsToPuse2(definitionNode);
         // [note: as per the definition of AD paths we need to at least one "c-use" node
-        // of one "p-use" node.]
-        console.log("c paths", c_paths)
-        console.log("p paths", p_paths)
+        // of one "p-use" node.])
         
         if(c_paths.length > 0) {
           for(let i = 0; i<c_paths.length; i++) {

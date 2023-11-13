@@ -4,8 +4,8 @@ import GraphDisplay from "../components/Graph";
 export default function Home() {
   return (
     <>
-      {/* <Canvas /> */}
-      <GraphDisplay />
+      <Canvas />
+      {/* <GraphDisplay /> */}
     </>
   );
 }
