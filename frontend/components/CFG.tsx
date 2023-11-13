@@ -29,21 +29,25 @@ const CFG = ({ code }: CFGProps) => {
   return (
     <>
       <div key={code} className="flex flex-col justify-center items-center">
-      {graphs.map((graph, i) => (
-        <div key={i} className="mb-4">
-          <div key={code} className={`mermaid bg-blue-200 w-full h-full`}>
-            {graph}
+        {graphs.map((graph, i) => (
+          <div key={i} className="mb-4">
+            <div key={code} className={`mermaid bg-blue-200 w-full h-full`}>
+              {graph}
+            </div>
+            <div key={code + Math.random()}>
+              {graph
+                .split("\n")
+                .slice(1)
+                .map((line: any, i: any) => (
+                  <p key={i}>{line}</p>
+                ))}
+            </div>
+            <div>
+              <hr />
+            </div>
           </div>
-          <div key={code} className=''>
-           <p>{graph}</p> 
-          </div>
-          <div>
-            <hr />
-          </div>
-        </div>
-      ))}
-    </div>
-    
+        ))}
+      </div>
     </>
   );
 };

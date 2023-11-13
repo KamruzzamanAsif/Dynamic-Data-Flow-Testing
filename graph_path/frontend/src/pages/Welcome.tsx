@@ -5,12 +5,12 @@ const WelcomePage: React.FC = () => {
   const [graphInfo, setGraphInfo] = useState<string[]>([]);
   const [consoleLogs, setConsoleLogs] = useState<string[]>([]);
 
-    const inputGraphString = `S(Start)-->1(1, 2, 3, 4, 5, 6, 7, 8 rem1 : Define, 8, );
+  const inputGraphString = `S(Start)-->1(1, 2, 3, 4, 5, 6, 7, 8 rem1 : Define, 8, );
     1(1, 2, 3, 4, 5, 6, 7, 8 rem1 : Define, 8, )-->9(9, );
     9(9, )-->10(10, );
     9(9, )-->11(11, 12, 13 rem1 : c-use, 14, 15, );
     10(10, )-->11(11, 12, 13 rem1 : c-use, 14, 15, );
-    11(11, 12, 13 rem1 : c-use, 14, 15, )-->E(End)`
+    11(11, 12, 13 rem1 : c-use, 14, 15, )-->E(End)`;
 
   const graphString = `S(Start)-->0(0, 1 work : Define);
     0(0, 1 work : Define)-->2(2 work : p-use, );
@@ -31,8 +31,7 @@ const WelcomePage: React.FC = () => {
     15(15, )-->16(16, 17, );
     16(16, 17, )-->E(End)`;
 
-  
-    const graphString2 = `S(Start)-->0(0 payment : Define, 1, );
+  const graphString2 = `S(Start)-->0(0 payment : Define, 1, );
     0(0 payment : Define, 1, )-->2(2, );
     2(2, )-->16(16 payment : c-use, 17, );
     2(2, )-->3(3 payment : Define, );
@@ -61,30 +60,30 @@ const WelcomePage: React.FC = () => {
     myGraph.findAndSoteAllTypesofNodes();
 
     const AU_paths = myGraph.getAllUsesPaths();
-    addLog("[ok] APU paths", AU_paths, AU_paths.length);
+    addLog("[ok] APU paths", AU_paths, " ::TOTAL:: ", AU_paths.length);
     console.log("[ok] APU paths", AU_paths, AU_paths.length);
 
     const APU_paths = myGraph.getAllPusePaths();
-    addLog("[ok] APU paths", APU_paths, APU_paths.length);
+    addLog("[ok] APU paths", APU_paths, " ::TOTAL:: ", APU_paths.length);
     console.log("[ok] APU paths", APU_paths, APU_paths.length);
 
     const ACU_paths = myGraph.getAllCusePaths();
-    addLog("[ok] APU paths", APU_paths, APU_paths.length);
+    addLog("[ok] ACU paths", ACU_paths, " ::TOTAL:: ", ACU_paths.length);
     console.log("[ok] APU paths", APU_paths, APU_paths.length);
 
     const APUC_paths = myGraph.getAllPSomeC();
-    addLog("[ok] APUC paths", APUC_paths, APUC_paths.length);
+    addLog("[ok] APUC paths", APUC_paths, " ::TOTAL:: ", APUC_paths.length);
 
     const ACUP_paths = myGraph.getAllCSomeP();
-    addLog("[ok] ACUP paths", ACUP_paths, ACUP_paths.length);
+    addLog("[ok] ACUP paths", ACUP_paths, " ::TOTAL:: ", ACUP_paths.length);
     console.log("[ok] ACUP paths", ACUP_paths, ACUP_paths.length);
 
     const ADU_paths = myGraph.getAllDUPaths();
-    addLog("[ok] ADUP paths", ADU_paths, ADU_paths.length);
+    addLog("[ok] ADUP paths", ADU_paths, " ::TOTAL:: ", ADU_paths.length);
     console.log("[ok] ADUP paths", ADU_paths, ADU_paths.length);
 
     const AD_paths = myGraph.getAllDefinitionPaths();
-    addLog("[ok] AD paths", AD_paths);
+    addLog("[ok] AD paths", AD_paths, " ::TOTAL:: ", AD_paths.length);
     console.log("[ok] AD paths", AD_paths);
   };
 
@@ -98,7 +97,7 @@ const WelcomePage: React.FC = () => {
         onClick={handleClick}
         className="bg-black text-white text-xl px-6 py-2 rounded-md mb-4"
       >
-        Click me
+        Generate Path
       </button>
       <textarea
         value={consoleLogs.join("\n")}

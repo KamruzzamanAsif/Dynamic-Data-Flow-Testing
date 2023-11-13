@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import CFG from "../CFG";
-import Graph from "../GraphGenerator/Paths";
+// import Graph from "../GraphGenerator/Paths";
 import getCFGRender, { getDistinctVariables } from "../libs/CFGRender";
 
 export const defaultCode = `#include <stdio.h>
@@ -25,10 +25,6 @@ const Flowchart = ({ editorRef }: any | null) => {
 
   const fetchCode = useCallback(() => {
     setCode(editorRef.current.getValue());
-    const myGraph = new Graph();
-    let graph = processRenderedString(graphs[0]);
-    console.log("My Graph", graph);
-    console.log("Whole ", myGraph.createGraph(graph));
   }, [editorRef]);
 
   function processRenderedString(data: string): string {
