@@ -3,19 +3,16 @@ import Graph from "../components/Graph";
 
 const WelcomePage: React.FC = () => {
   const [graphInfo, setGraphInfo] = useState<string[]>([]);
+  const [consoleLogs, setConsoleLogs] = useState<string[]>([]);
 
-  const handleClick = () => {
-    // Example usage:
+    const inputGraphString = `S(Start)-->1(1, 2, 3, 4, 5, 6, 7, 8 rem1 : Define, 8, );
+    1(1, 2, 3, 4, 5, 6, 7, 8 rem1 : Define, 8, )-->9(9, );
+    9(9, )-->10(10, );
+    9(9, )-->11(11, 12, 13 rem1 : c-use, 14, 15, );
+    10(10, )-->11(11, 12, 13 rem1 : c-use, 14, 15, );
+    11(11, 12, 13 rem1 : c-use, 14, 15, )-->E(End)`
 
-    // const graphString = `S(Start)-->1(1, 2, 3, 4, 5, 6, 7, 8 work : Define, 9 work : p-use, );
-    // 1(1, 2, 3, 4, 5, 6, 7, 8 work : Define, 9 work : p-use, )-->9(9, );
-    // 9(9, )-->10(10, 11, 12, );
-    // 9(9, )-->13(13, );
-    // 10(10, 11, 12, )-->13(13, );
-    // 13(13, )-->E(End)`;
-
-    // Book Example Graph (for varibale 'work')
-    const graphString = `S(Start)-->0(0, 1 work : Define);
+  const graphString = `S(Start)-->0(0, 1 work : Define);
     0(0, 1 work : Define)-->2(2 work : p-use, );
     2(2 work : p-use, )-->3(3, );
     2(2 work : p-use, )-->16(16, 17, );
@@ -34,6 +31,7 @@ const WelcomePage: React.FC = () => {
     15(15, )-->16(16, 17, );
     16(16, 17, )-->E(End)`;
 
+  
     const graphString2 = `S(Start)-->0(0 payment : Define, 1, );
     0(0 payment : Define, 1, )-->2(2, );
     2(2, )-->16(16 payment : c-use, 17, );
@@ -53,51 +51,61 @@ const WelcomePage: React.FC = () => {
     15(15, )-->16(16 payment : c-use, 17, );
     16(16 payment : c-use, 17, )-->E(End)`;
 
+  const handleClick = () => {
     const myGraph = new Graph();
-    // const myGraph2 = new Graph();
 
-    const graphObject = myGraph.createGraph(graphString2);
-    // console.log("Whole Graph", graphObject);
+    const graphObject = myGraph.createGraph(graphString);
+    addLog("Whole Graph", graphObject);
+    console.log("Whole Graph", graphObject);
 
     myGraph.findAndSoteAllTypesofNodes();
 
     const AU_paths = myGraph.getAllUsesPaths();
-    // console.log("[ok], AU paths", AU_paths, "Count: ", AU_paths.length);
+    addLog("[ok] APU paths", AU_paths, AU_paths.length);
+    console.log("[ok] APU paths", AU_paths, AU_paths.length);
 
-    // APU Path good
-    // const APU_paths = myGraph.getAllPusePaths();
-    // console.log("[ok], APU paths", APU_paths, "Count: ", APU_paths.length);
+    const APU_paths = myGraph.getAllPusePaths();
+    addLog("[ok] APU paths", APU_paths, APU_paths.length);
+    console.log("[ok] APU paths", APU_paths, APU_paths.length);
 
+    const ACU_paths = myGraph.getAllCusePaths();
+    addLog("[ok] APU paths", APU_paths, APU_paths.length);
+    console.log("[ok] APU paths", APU_paths, APU_paths.length);
 
-    // ACU Path good
-    // const ACU_paths = myGraph.getAllCusePaths();
-    // console.log("[ok], ACU paths", ACU_paths, "Count: ", ACU_paths.length);
-
-    //! check it
     const APUC_paths = myGraph.getAllPSomeC();
-    console.log("APUC paths\n", APUC_paths, "\nCount: ", APUC_paths.length);
+    addLog("[ok] APUC paths", APUC_paths, APUC_paths.length);
 
-    //! check it
-    // const ACUP_paths = myGraph.getAllCuseSomePusePaths();
-    
+    const ACUP_paths = myGraph.getAllCSomeP();
+    addLog("[ok] ACUP paths", ACUP_paths, ACUP_paths.length);
+    console.log("[ok] ACUP paths", ACUP_paths, ACUP_paths.length);
 
     const ADU_paths = myGraph.getAllDUPaths();
-    // console.log("[ok] AU paths", ADU_paths, "Count: ", ADU_paths.length);
+    addLog("[ok] ADUP paths", ADU_paths, ADU_paths.length);
+    console.log("[ok] ADUP paths", ADU_paths, ADU_paths.length);
 
-    
-    // const AD_paths = myGraph.getAllDefinitionPaths();
-    // console.log("[ok] AD paths", AD_paths);
+    const AD_paths = myGraph.getAllDefinitionPaths();
+    addLog("[ok] AD paths", AD_paths);
+    console.log("[ok] AD paths", AD_paths);
+  };
+
+  const addLog = (...logs: any[]) => {
+    setConsoleLogs((prevLogs) => [...prevLogs, logs.join(" ")]);
   };
 
   return (
-    <div className="h-screen flex items-center justify-center">
-        <button
-          onClick={handleClick}
-          className="bg-black text-white text-xl px-6 py-2 rounded-md"
-        >
-          Click me
-        </button>
-      </div>
+    <div className="h-screen flex flex-col items-center justify-center">
+      <button
+        onClick={handleClick}
+        className="bg-black text-white text-xl px-6 py-2 rounded-md mb-4"
+      >
+        Click me
+      </button>
+      <textarea
+        value={consoleLogs.join("\n")}
+        readOnly
+        className="w-full h-full p-2 border border-gray-300 rounded-md"
+      />
+    </div>
   );
 };
 

@@ -197,21 +197,23 @@ class Graph {
   getAllCusePaths(): string[] {
 
     // Find paths from each "Define" node to at least one "c-use" node
-    this.definition_nodes.forEach(cuseNode => {
-      const paths = this.findAllPathsToCuse(cuseNode);
-
-      // console.log(paths)
+    this.definition_nodes.forEach(definitionNode => {
+      let paths = this.findAllDCPathsToCuse(definitionNode);
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
       for (const path of paths) {
-
-        if (path.length > 0) {
-          const concatenatedPath = path.join(', '); // Concatenate strings in the row
-          this.allCusePaths.add(this.make_path(concatenatedPath));
-        }
+        const concatenatedPath = path.join(', '); // Concatenate strings in the row
+        this.allCusePaths.add(this.make_path(concatenatedPath));
       }
     });
+
+    // remove one length paths from allPsomeC
+    for(const path of this.allCusePaths) {
+      if(path.split(" -> ").length == 1) {
+        this.allCusePaths.delete(path);
+      }
+    }
 
     return Array.from(this.allCusePaths);
   }
@@ -221,8 +223,8 @@ class Graph {
 
 
     // Find paths from each "Define" node to at least one "c-use" node
-    this.definition_nodes.forEach(puseNode => {
-      const paths = this.findAllPathsToPuse(puseNode);
+    this.definition_nodes.forEach(definitionNode => {
+      let paths = this.findAllDCPathsToPuse(definitionNode);
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
@@ -231,6 +233,13 @@ class Graph {
         this.allPusePaths.add(this.make_path(concatenatedPath));
       }
     });
+
+    // remove one length paths from allPsomeC
+    for(const path of this.allPusePaths) {
+      if(path.split(" -> ").length == 1) {
+        this.allPusePaths.delete(path);
+      }
+    }
 
     return Array.from(this.allPusePaths);
   }
@@ -259,7 +268,7 @@ class Graph {
     this.definition_nodes.forEach(definitionNode => {
       let paths = this.findAllDCPathsToPuse(definitionNode);
 
-      console.log("All DC Paths to P use\n", paths);
+      // console.log("All DC Paths to P use\n", paths);
       if (paths.length == 0) {
         paths = this.findAllDCPathsToCuse(definitionNode);
       }
@@ -268,38 +277,46 @@ class Graph {
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        //! Previously you used, allDuPaths array, I replaced this with allPsomeC
-        //! Previously you had extra paths, but now when i replaced you had a missing path
-        //! please check it
         this.allPsomeC.add(this.make_path(concatenatedPath));
       }
     });
+
+    // remove one length paths from allPsomeC
+    for(const path of this.allPsomeC) {
+      if(path.split(" -> ").length == 1) {
+        this.allPsomeC.delete(path);
+      }
+    }
 
     return Array.from(this.allPsomeC);
   }
 
   //***********GET all-c/some-p PATH(ACU+P paths) Starts**************/
-  getallCsomeP(): string[] {
+  getAllCSomeP(): string[] {
 
     // Find paths from each "Define" node to at least one "c-use" node
     this.definition_nodes.forEach(definitionNode => {
 
-      let paths = this.findAllPathsToCuse(definitionNode);
+      let paths = this.findAllDCPathsToCuse(definitionNode);
 
       if (paths.length == 0) {
-        paths = this.findAllPathsToPuse(definitionNode);
+        paths = this.findAllDCPathsToPuse(definitionNode);
       }
 
       // make paths as a stirng of list of paths
       // send path as a list of stings
       for (const path of paths) {
         const concatenatedPath = path.join(', '); // Concatenate strings in the row
-        //! Previously you used, allDuPaths array, I replaced this with allCsomeP
-        //! Previously you had extra paths, but now when i replaced you had a missing path
-        //! please check it
+      
         this.allCsomeP.add(this.make_path(concatenatedPath));
       }
     });
+
+    for(const path of this.allCsomeP) {
+      if(path.split(" -> ").length == 1) {
+        this.allCsomeP.delete(path);
+      }
+    }
 
     return Array.from(this.allCsomeP);
   }
@@ -494,14 +511,17 @@ class Graph {
   // this function finds all c-paths for a definition node
   findAllDCPathsToCuse(node: Node): string[][] {
     const paths: string[][] = [];
+    const selfNode = node;
 
     // Helper function to recursively find paths
     const findPaths = (currentNode: Node, currentPath: string[]): void => {
       // Add the current node to the path
       const pathString = this.path_extractor(currentNode.label);
       currentPath.push(pathString);
+
+      // console.log(currentNode.label)
       
-      if (currentNode.label.includes("Define")) {
+      if (currentNode.label.includes("Define") && currentNode != selfNode) {
         return;
       }
       
@@ -564,6 +584,102 @@ class Graph {
 
     return paths;
   }
+
+
+    //***********GET ALL DEFINITION PATH(AD paths) Starts**************/
+    getAllDefinitionPaths(): string[] {
+      // Find paths from each "Define" node to at least one "c-use" node
+      this.definition_nodes.forEach(definitionNode => {
+        let c_paths = this.findAllPathsToCuse2(definitionNode);
+        let p_paths = this.findAllPathsToPuse2(definitionNode);
+        // [note: as per the definition of AD paths we need to at least one "c-use" node
+        // of one "p-use" node.])
+        
+        if(c_paths.length > 0) {
+          for(let i = 0; i<c_paths.length; i++) {
+            if(c_paths[i].length > 2){
+              this.allDefinitionPaths.push(c_paths[i]);
+              break;
+            }
+          }
+        }
+        else{
+          for(let i = 0; i<p_paths.length; i++) {
+            if(p_paths[i].length > 2){
+              this.allDefinitionPaths.push(p_paths[i]);
+              break;
+            }
+          }
+        }
+      });
+  
+      return this.allDefinitionPaths;
+    }
+  
+    // this function finds all c-paths for a definition node
+    findAllPathsToCuse2(node: Node): string[] {
+      const paths: string[] = [];
+  
+      // Helper function to recursively find paths
+      const findPaths = (currentNode: Node, currentPath: string[]): void => {
+        // Add the current node to the path
+        let pathString = this.path_extractor(currentNode.label);
+        currentPath.push(pathString);
+  
+        // If the current node is a "c-use" node, add the current path to the result
+        if (currentNode.label.includes("c-use")) {
+          paths.push(currentPath.join(' -> '));
+        }
+  
+        // Recursively explore children
+        if (currentNode.children) {
+          for (const child of currentNode.children) {
+            findPaths(child, [...currentPath]); // Create a copy of the current path
+          }
+        }
+  
+        // Remove the current node from the path when backtracking
+        currentPath.pop();
+      };
+  
+      // Start the traversal from the given "Define" node
+      findPaths(node, []);
+  
+      return paths;
+    }
+  
+    // this function finds all p-paths for a definition node
+    findAllPathsToPuse2(node: Node): string[] {
+      const paths: string[] = [];
+  
+      // Helper function to recursively find paths
+      const findPaths = (currentNode: Node, currentPath: string[]): void => {
+        // Add the current node to the path
+        let pathString = this.path_extractor(currentNode.label);
+        currentPath.push(pathString);
+  
+        // If the current node is a "c-use" node, add the current path to the result
+        if (currentNode.label.includes("p-use")) {
+          paths.push(currentPath.join(' -> '));
+        }
+  
+        // Recursively explore children
+        if (currentNode.children) {
+          for (const child of currentNode.children) {
+            findPaths(child, [...currentPath]); // Create a copy of the current path
+          }
+        }
+  
+        // Remove the current node from the path when backtracking
+        currentPath.pop();
+      };
+  
+      // Start the traversal from the given "Define" node
+      findPaths(node, []);
+  
+      return paths;
+    }
+    //***********GET ALL DEFINITIONS PATH ENDS**************/
   
 }
 
