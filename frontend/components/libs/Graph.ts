@@ -9,6 +9,14 @@ import Node from "./Node";
  * 3. Also the the node which is marked as 'define/p-use/c-use' shouldn't be repeated
  */
 
+function isInsideConditional(line: any, variable: any): any {
+  return (
+    line.includes(`if`) ||
+    line.includes(`else if`) ||
+    line.includes(`while`)
+  ) && line.includes(variable);
+}
+
 export default function makeGraph(
   firstLine: number,
   lastLine: number,
@@ -30,7 +38,7 @@ export default function makeGraph(
       continue;
     }
 
-    // Variable assignment or input statement
+    // Variable assignment or input statement (Define)
     if ((lines[i].includes(`${variable} = `) || (lines[i].includes("scanf")) && lines[i].includes(`&${variable}`))) {
       console.log('INSIDE DEFINE-SCANF', variable)
       currentNode.label += i.toString() + ` ${variable} : Define, `;
@@ -38,43 +46,19 @@ export default function makeGraph(
       //continue;
     }
 
+    //! Check for C-use (computational use)
     if (
-      (lines[i].includes(`= ${variable}`) || ((lines[i].includes("printf")) && lines[i].includes(`${variable}`))) && isVariableDefined
-    ) {
-      // Variable is on the right side of an assignment after it has been defined
-      console.log("printf aseto bhai")
-      currentNode.label += i.toString() + ` ${variable} : c-use, `;
-      //continue;
-    }
-
-    // Check for expressions involving the variable
-    if (isVariableDefined) {
-      console.log('Defined inside C-USE', variable)
-      
-      if (lines[i].includes(`+ ${variable}`) || lines[i].includes(`- ${variable}`) ||
+      (lines[i].includes("printf") && lines[i].includes(`${variable}`)) ||
+      (lines[i].includes(`= ${variable}`) ||
+        lines[i].includes(`+ ${variable}`) || lines[i].includes(`- ${variable}`) ||
         lines[i].includes(`* ${variable}`) || lines[i].includes(`/ ${variable}`) ||
-        lines[i].includes(`% ${variable}`) || (lines[i].includes("printf"))) {
-        // Variable is involved in a computation
+        lines[i].includes(`% ${variable}`))
+    ) {
+      console.log('INSIDE C-USE: ', variable)
+      if (!currentNode.label.includes(i.toString()))
         currentNode.label += i.toString() + ` ${variable} : c-use, `;
-        //continue;
-
-      }
-    }
-
-    //Check for p-use
-    if (lines[i].includes('if') || lines[i].includes('while') || lines[i].includes('for') || lines[i].includes('do')) {
-
-      // console.log('INSIDE CHECKING p-use');
-      //console.log('INSIDE P-USE: ', variable)
-      if (lines[i].includes(`${variable}`)) {
-        console.log('INSIDE P-USE: ', variable)
-        if (!currentNode.label.includes(i.toString()))
-          currentNode.label += i.toString() + ` ${variable} : p-use, `;
-        else
-          currentNode.label += ` ${variable} : p-use, `;
-      }
-      // continue;
-      // }
+      else
+        currentNode.label += ` ${variable} : c-use, `;
     }
 
     if (
@@ -87,20 +71,26 @@ export default function makeGraph(
         currentNode.label = i.toString() + ", "
       }
 
-
       let IFExists = lines[i].includes("if")
       let FORExists = lines[i].includes("for")
       let WHILEExists = lines[i].includes("while")
       let DOExists = lines[i].includes("do")
       let ELSEExists = false
+      let startNode = new Node("");
 
-      const startNode = new Node(i.toString() + ", ")
+      if (lines[i].includes(variable)) {
+        startNode = new Node(i.toString() + ` ${variable} : p-use, `)   //! kahini ekhane
+      } else {
+        startNode = new Node(i.toString() + ", ")   //! kahini ekhane
+      }
+
       currentNode.addChild(startNode)
       let endLine = findClosingBrace(i) // where the conditional block ends
       const endNode = new Node(endLine.toString() + ", ")
 
       console.log('Start: ', i, 'End: ', endLine)
       makeGraph(i + 1, endLine, startNode, endNode, variable)
+
 
       currentNode = endNode
       i = endLine
@@ -122,6 +112,7 @@ export default function makeGraph(
       if (FORExists || WHILEExists || DOExists) {
         endNode.addChild(startNode)
       }
+
     } else {
       if (!currentNode.label.includes(i.toString()))
         currentNode.label += i.toString() + ",  "

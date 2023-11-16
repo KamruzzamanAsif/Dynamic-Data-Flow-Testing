@@ -58,7 +58,6 @@ export default function getCFGRender(code: string): string[] {
     const endNode = new Node("End")
 
     makeGraph(1, lines.length, startNode, endNode, variable)
-    // makeGraph(1, lines.length, startNode, endNode)
     renderString = `flowchart TD`
     DFS(startNode)
     console.log(renderString)
