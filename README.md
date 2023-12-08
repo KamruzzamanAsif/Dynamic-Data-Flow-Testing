@@ -1,4 +1,4 @@
-#Dynamic Data Flow Testing
+#Dynamic-Data-Flow-Testing
 Welcome to the Dynamic Data Flow Testing repository! This web-based application is designed to facilitate dynamic data flow testing for C source code. The tool performs various tasks, including the creation of a Data Flow Graph (DFG) for each variable, extracting all paths from the DFG (such as AU, APU, ACU, etc.), and generating tables for the identified paths for each variable.
 
 #Features
@@ -11,7 +11,7 @@ Extract all possible paths from the Data Flow Graph, including AU, APU, ACU, and
 Task-3: Path Tables
 Create tables summarizing the paths identified in Task-2 for each variable. This provides a structured overview of the dynamic data flow within the code.
 
-#How to use
+#How-to-use
 Here 2 applications namely forntend and graph_path
 1. run the frontend application where you will get a canvas at right and dfd's at left.
 2. you will also see the graph strings for each of the dfd's.
